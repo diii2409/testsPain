@@ -32,25 +32,50 @@ canvas.addEventListener("mouseup", stopDrawing);
 //******************************************************************************
 // USE INTERFACE MOBIE
 // Touch events
-canvas.addEventListener("touchstart", (e) => {
-	isDrawing = true;
-	const touch = e.touches[0];
-	const x = touch.clientX;
-	const y = touch.clientY;
-	points.push({ x, y, alpha: 1 }); // Add initial point with full opacity
-});
+// Correcting the touch position
+function getTouchPos(canvasDom, touchEvent) {
+	var rect = canvasDom.getBoundingClientRect();
+	return {
+		x: touchEvent.touches[0].clientX - rect.left,
+		y: touchEvent.touches[0].clientY - rect.top,
+	};
+}
 
-canvas.addEventListener("touchmove", (e) => {
-	if (isDrawing) {
-		const touch = e.touches[0];
-		const x = touch.clientX;
-		const y = touch.clientY;
-		points.push({ x, y, alpha: 1 }); // Add new points with full opacity
-		drawPoints(); // Draw points with current opacity
-	}
-});
+// Updated touchstart event handler
+canvas.addEventListener(
+	"touchstart",
+	(e) => {
+		const touchPos = getTouchPos(canvas, e);
+		const x = touchPos.x;
+		const y = touchPos.y;
+		startDrawing({ offsetX: x, offsetY: y });
+		e.preventDefault(); // Prevent scrolling when touching the canvas
+	},
+	false,
+);
 
-canvas.addEventListener("touchend", () => {
-	isDrawing = false;
-});
+// Updated touchmove event handler
+canvas.addEventListener(
+	"touchmove",
+	(e) => {
+		if (isDrawing) {
+			const touchPos = getTouchPos(canvas, e);
+			const x = touchPos.x;
+			const y = touchPos.y;
+			continueDrawing({ offsetX: x, offsetY: y });
+			e.preventDefault(); // Prevent scrolling when touching the canvas
+		}
+	},
+	false,
+);
+
+// Updated touchend event handler
+canvas.addEventListener(
+	"touchend",
+	() => {
+		stopDrawing();
+		e.preventDefault(); // Prevent scrolling when touching the canvas
+	},
+	false,
+);
 //******************************************************************************
