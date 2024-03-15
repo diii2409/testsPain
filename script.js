@@ -28,3 +28,29 @@ const stopDrawing = () => {
 canvas.addEventListener("mousedown", startDrawing);
 canvas.addEventListener("mousemove", continueDrawing);
 canvas.addEventListener("mouseup", stopDrawing);
+
+//******************************************************************************
+// USE INTERFACE MOBIE
+// Touch events
+canvas.addEventListener("touchstart", (e) => {
+	isDrawing = true;
+	const touch = e.touches[0];
+	const x = touch.clientX;
+	const y = touch.clientY;
+	points.push({ x, y, alpha: 1 }); // Add initial point with full opacity
+});
+
+canvas.addEventListener("touchmove", (e) => {
+	if (isDrawing) {
+		const touch = e.touches[0];
+		const x = touch.clientX;
+		const y = touch.clientY;
+		points.push({ x, y, alpha: 1 }); // Add new points with full opacity
+		drawPoints(); // Draw points with current opacity
+	}
+});
+
+canvas.addEventListener("touchend", () => {
+	isDrawing = false;
+});
+//******************************************************************************
