@@ -1,0 +1,147 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Poppins", sans-serif;
+}
+
+body {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	background-color: rgb(74, 151, 240);
+	font-weight: 500;
+}
+
+.container {
+	display: flex;
+	width: 100%;
+	max-width: 1050px;
+	gap: 10px;
+	padding: 10px;
+}
+section {
+	background-color: #fff;
+	border-radius: 7px;
+}
+.tools-board {
+	width: 210px;
+	padding: 15px 22px 0;
+}
+.tools-board .row {
+	margin-bottom: 20px;
+}
+.row .options {
+	list-style: none;
+	margin: 10px 0 0 5px;
+}
+.row .options .option {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+.option:hover img,
+.option.active img {
+	filter: invert(17%) sepia(90%) saturate(3000%) hue-rotate(900deg)
+		brightness(100%) contrast(100%);
+	cursor: pointer;
+}
+.option:hover span,
+.option:hover label,
+.option.active span,
+.option.active label {
+	color: rgb(71, 141, 217);
+}
+.option span,
+.option label {
+	color: rgb(79, 90, 89);
+	padding: 10px;
+}
+.option #fill-color {
+	height: 14px;
+	width: 14px;
+}
+.fill-color:checked ~ label {
+	color: rgb(71, 141, 217);
+}
+.option #size-slider {
+	width: 100%;
+	height: 20px;
+	margin-top: 10px;
+}
+.colors .options {
+	display: flex;
+	justify-content: space-between;
+}
+.colors .option {
+	position: relative;
+	height: 20px;
+	width: 20px;
+	border-radius: 50%;
+
+	margin-top: 4px;
+}
+.colors .option:nth-child(1) {
+	background: #fff;
+	border: 1px solid #bfbfbf;
+}
+.colors .option:nth-child(1):hover::before {
+	border-color: #ccc;
+}
+.colors .option:nth-child(2) {
+	background: #000;
+}
+.colors .option:nth-child(3) {
+	background: rgb(233, 30, 31);
+}
+.colors .option:nth-child(4) {
+	background: rgb(107, 212, 8);
+}
+.colors .option:nth-child(5) {
+	background: rgb(68, 139, 225);
+}
+.colors .option:hover:before {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	content: "";
+	height: 12px;
+	width: 12px;
+	background: inherit;
+	border-radius: inherit;
+	border: 2px solid #fff;
+}
+.buttons button {
+	width: 100%;
+	color: #fff;
+	font-weight: 500;
+	border: none;
+	outline: none;
+	padding: 12px 0;
+	margin-bottom: 12px;
+	background: none;
+	border-radius: 4px;
+}
+.buttons .clear-canvas {
+	color: rgb(98, 110, 112);
+	border: 2px solid rgb(98, 110, 112);
+	transition: all 0.3s ease;
+}
+.clear-canvas:hover {
+	background-color: rgb(98, 110, 112);
+	color: #fff;
+}
+.buttons .save-img {
+	background-color: rgb(71, 141, 217);
+	transition: all 0.3s ease;
+}
+.save-img:hover {
+	background-color: #bfbfbf;
+}
+/* ******************************************* */
+.drawing-board {
+	flex: 1;
+}

@@ -2,8 +2,68 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="style.css" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Pain</title>
+		<title>App Pain JavaScript</title>
 	</head>
-	<body></body>
+	<body>
+		<div class="container">
+			<section class="tools-board">
+				<div class="row">
+					<label for="" class="title">Shapes</label>
+					<ul class="options">
+						<li class="option">
+							<img src="./icons/rectangle.svg" alt="" />
+							<span>rectangle</span>
+						</li>
+						<li class="option">
+							<img src="./icons/circle.svg" alt="" />
+							<span>circle</span>
+						</li>
+						<li class="option">
+							<img src="./icons/triangle.svg" alt="" />
+							<span>triangle</span>
+						</li>
+						<li class="option">
+							<input type="checkbox" name="" id="fill-color" />
+							<label for="">Fill Color</label>
+						</li>
+					</ul>
+				</div>
+				<!-- ************************************ -->
+				<div class="row">
+					<label for="" class="title">Options</label>
+					<ul class="options">
+						<li class="option active">
+							<img src="./icons/brush.svg" alt="" />
+							<span>brush</span>
+						</li>
+						<li class="option">
+							<img src="./icons/eraser.svg" alt="" />
+							<span>eracser</span>
+						</li>
+						<li class="option">
+							<input type="range" name="" id="size-slider" />
+						</li>
+					</ul>
+				</div>
+				<!-- ************************************ -->
+				<div class="row colors">
+					<label for="" class="title">Colors</label>
+					<ul class="options">
+						<li class="option"></li>
+						<li class="option"></li>
+						<li class="option"></li>
+						<li class="option"></li>
+						<li class="option"></li>
+					</ul>
+				</div>
+				<div class="row buttons">
+					<button class="clear-canvas">clear canvas</button>
+					<button class="save-img">Save as Image</button>
+				</div>
+			</section>
+			<section class="drawing-board"></section>
+		</div>
+	</body>
 </html>
