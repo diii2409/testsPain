@@ -13,19 +13,28 @@ body {
 	min-height: 100vh;
 	background-color: rgb(74, 151, 240);
 	font-weight: 500;
+	-webkit-touch-callout: none; /* Safari */
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE 10+ */
+	user-select: none; /* Standard syntax */
 }
-
+/* ********************************************** */
 .container {
 	display: flex;
+	/* thêm warp cho dui,thêm để test vài thứ ở project khác */
+	flex-wrap: wrap;
 	width: 100%;
 	max-width: 1050px;
 	gap: 10px;
 	padding: 10px;
 }
+/* *************************************/
 section {
 	background-color: #fff;
 	border-radius: 7px;
 }
+/* *************************************/
 .tools-board {
 	width: 210px;
 	padding: 15px 22px 0;
@@ -71,6 +80,7 @@ section {
 	height: 20px;
 	margin-top: 10px;
 }
+/* ********************************************** */
 .colors .options {
 	display: flex;
 	justify-content: space-between;
@@ -80,29 +90,26 @@ section {
 	height: 20px;
 	width: 20px;
 	border-radius: 50%;
-
 	margin-top: 4px;
 }
 .colors .option:nth-child(1) {
-	background: #fff;
+	background-color: #fff;
 	border: 1px solid #bfbfbf;
 }
-.colors .option:nth-child(1):hover::before {
-	border-color: #ccc;
-}
+
 .colors .option:nth-child(2) {
-	background: #000;
+	background-color: #000;
 }
 .colors .option:nth-child(3) {
-	background: rgb(233, 30, 31);
+	background-color: rgb(233, 30, 31);
 }
 .colors .option:nth-child(4) {
-	background: rgb(107, 212, 8);
+	background-color: rgb(107, 212, 8);
 }
 .colors .option:nth-child(5) {
-	background: rgb(68, 139, 225);
+	background-color: rgb(71, 141, 217);
 }
-.colors .option:hover:before {
+.colors .option:not(#choosing-Color):hover::before {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -114,6 +121,35 @@ section {
 	border-radius: inherit;
 	border: 2px solid #fff;
 }
+.colors .option:nth-child(1):hover::before {
+	border-color: #ccc !important;
+}
+.colors .option input[type="color"] {
+	position: relative;
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
+	border: none;
+	padding: 0;
+	appearance: none; /* Ẩn các phần tử mặc định của input[type="color"] */
+	cursor: pointer;
+	outline: none;
+}
+
+.colors .option input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+
+.colors .option input[type="color"]::-webkit-color-swatch {
+	border: 1px solid #bfbfbf;
+	border-radius: 50%;
+	padding: 0;
+}
+.colors .option:nth-child(5) {
+	transform: scale(1.1);
+	border-radius: 50%;
+}
+/* ********************************************** */
 .buttons button {
 	width: 100%;
 	color: #fff;

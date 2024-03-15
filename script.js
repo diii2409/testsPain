@@ -1,24 +1,112 @@
 const canvas = document.querySelector("canvas");
-const ctx = canvas.getContext("2d");
+const toolBtns = document.querySelectorAll(".tool");
+const fillColor = document.getElementById("fill-color");
+const sizeSlider = document.getElementById("size-slider");
+const colorsBtn = document.querySelectorAll(".colors .option");
+const colorsPicker = document.getElementById("color-picker");
+const choosingColor = document.getElementById("choosing-Color");
+const clearCanvas = document.querySelector(".clear-canvas");
+const saveTmg = document.querySelector(".save-img");
+/*************************************** */
 
+const ctx = canvas.getContext("2d");
+let prevMouseX, prevMouseY, snapshot;
+let isDrawing = false;
+let selectedTool = "brush";
+let brushWidth = 1;
+let selectedColor = "#000";
+
+function setCanvasbackground() {
+	ctx.fillStyle = "#fff";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = selectedColor;
+}
 window.addEventListener("load", () => {
 	// Setting canvas width/height
 	canvas.width = canvas.offsetWidth;
 	canvas.height = canvas.offsetHeight;
+	setCanvasbackground();
 });
 
-let isDrawing = false;
+function drawRect(e) {
+	//nếu không fill thì vẽ bình thường
+	if (!fillColor.checked)
+		return ctx.strokeRect(
+			e.offsetX,
+			e.offsetY,
+			prevMouseX - e.offsetX,
+			prevMouseY - e.offsetY,
+		);
+	// thực hiện khi có thêm chức năng fill
+	ctx.fillRect(
+		e.offsetX,
+		e.offsetY,
+		prevMouseX - e.offsetX,
+		prevMouseY - e.offsetY,
+	);
+}
+
+function drawTriangle(e) {
+	// Begin a new path
+	ctx.beginPath();
+
+	// Move to the starting point of the triangle
+	ctx.moveTo(prevMouseX, prevMouseY);
+
+	// Calculate the coordinates of the third vertex of the triangle
+	const thirdVertexX = 2 * prevMouseX - e.offsetX;
+	const thirdVertexY = e.offsetY;
+
+	// Draw lines to the second and third vertices
+	ctx.lineTo(e.offsetX, e.offsetY);
+	ctx.lineTo(thirdVertexX, thirdVertexY);
+
+	// Close the path to complete the triangle
+	ctx.closePath();
+
+	// Stroke or fill the triangle based on the fill color checkbox
+	fillColor.checked ? ctx.fill() : ctx.stroke();
+}
+
+function drawCirle(e) {
+	ctx.beginPath();
+	const radius = Math.sqrt(
+		(e.offsetX - prevMouseX) ** 2 + (e.offsetY - prevMouseY) ** 2,
+	);
+	ctx.arc(prevMouseX, prevMouseY, radius, 0, 2 * Math.PI);
+	fillColor.checked ? ctx.fill() : ctx.stroke();
+}
+
+/*************************************** */
 
 const startDrawing = (e) => {
 	isDrawing = true;
-	ctx.beginPath(); // Start a new path
-	ctx.moveTo(e.offsetX, e.offsetY); // Move to the starting point of the path
+	prevMouseX = e.offsetX;
+	prevMouseY = e.offsetY;
+	ctx.beginPath();
+	ctx.moveTo(e.offsetX, e.offsetY);
+	ctx.lineWidth = brushWidth;
+	ctx.strokeStyle = selectedColor;
+	ctx.fillStyle = selectedColor;
+	// coying canvas data & passing as snapshot  value.. this avoids dragging the image
+	snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
 };
 
 const continueDrawing = (e) => {
 	if (!isDrawing) return;
-	ctx.lineTo(e.offsetX, e.offsetY); // Add a new point to the path
-	ctx.stroke(); // Draw the path
+	// adding copied canvas data on to this canvas
+	ctx.putImageData(snapshot, 0, 0);
+	if (selectedTool === "brush" || selectedTool === "eraser") {
+		ctx.strokeStyle = selectedTool === "eraser" ? "#fff" : selectedColor;
+		ctx.lineTo(e.offsetX, e.offsetY);
+		ctx.stroke();
+	} else if (selectedTool === "triangle") {
+		drawTriangle(e);
+	} else if (selectedTool === "rectangle") {
+		drawRect(e);
+	} else if (selectedTool === "circle") {
+		drawCirle(e);
+	}
 };
 
 const stopDrawing = () => {
@@ -29,7 +117,71 @@ canvas.addEventListener("mousedown", startDrawing);
 canvas.addEventListener("mousemove", continueDrawing);
 canvas.addEventListener("mouseup", stopDrawing);
 
+/*************************************** */
+
+toolBtns.forEach((btn) => {
+	btn.addEventListener("click", () => {
+		//remove active class from the previous option
+		document.querySelector(".option.active").classList.remove("active");
+		//add active class to the next option
+		btn.classList.add("active");
+		selectedTool = btn.id;
+		// console.log(selectedTool);
+	});
+});
+
+sizeSlider.addEventListener("change", () => {
+	brushWidth = sizeSlider.value;
+});
+
+colorsBtn.forEach((btn) => {
+	btn.addEventListener("click", () => {
+		//remove selected class from the previous option
+		document.querySelector(".option.selected").classList.remove("selected");
+		//add selected class to the next option
+		btn.classList.add("selected");
+		//set selectedColor value
+		selectedColor = window
+			.getComputedStyle(btn)
+			.getPropertyValue("background-color");
+		choosingColor.style.backgroundColor = selectedColor;
+	});
+});
+
+colorsPicker.addEventListener("input", () => {
+	colorsPicker.parentElement.style.backgroundColor = colorsPicker.value;
+	selectedColor = colorsPicker.value;
+	choosingColor.style.backgroundColor = selectedColor;
+});
+
+clearCanvas.addEventListener("click", () => {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	setCanvasbackground();
+});
+saveTmg.addEventListener("click", () => {
+	const link = document.createElement("a");
+	link.href = canvas.toDataURL();
+	link.download = `${Date.now()}.jpg`;
+	link.click();
+});
+
+//***************************************************
+
+// Khu vực này dùng để xử lý các bug vô tình gặp phải nè
+
+// Add an event listener for 'mouseleave' to handle the case when the mouse leaves the canvas
+canvas.addEventListener("mouseleave", stopDrawing);
+
+// Add an event listener for 'mouseenter' to handle the case when the mouse enters the canvas
+canvas.addEventListener("mouseenter", (e) => {
+	// Only start drawing if the mouse button is already pressed
+	if (e.buttons === 1) {
+		startDrawing(e);
+	}
+});
+
 //******************************************************************************
+
 // USE INTERFACE MOBIE
 // Touch events
 // Correcting the touch position
@@ -78,4 +230,5 @@ canvas.addEventListener(
 	},
 	false,
 );
+
 //******************************************************************************
