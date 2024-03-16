@@ -9,12 +9,12 @@ const clearCanvas = document.querySelector(".clear-canvas");
 const saveTmg = document.querySelector(".save-img");
 /*************************************** */
 
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
 let prevMouseX, prevMouseY, snapshot;
 let isDrawing = false;
 let selectedTool = "brush";
 let brushWidth = 1;
-let selectedColor = "#000";
+let selectedColor = "rgb(0, 0, 0)";
 
 function setCanvasbackground() {
 	ctx.fillStyle = "#fff";
@@ -232,3 +232,54 @@ canvas.addEventListener(
 );
 
 //******************************************************************************
+function fill(e) {
+	// getMousePosition function
+	function getMousePosition(e) {
+		const rect = canvas.getBoundingClientRect();
+		const x = Math.floor(e.clientX - rect.left);
+		const y = Math.floor(e.clientY - rect.top);
+		return { x, y };
+	}
+
+	// getColorUnderMouse function
+	function getColorUnderMouse(x, y) {
+		const ctx = canvas.getContext("2d");
+		const imageData = ctx.getImageData(x, y, 1, 1);
+		const rgbColor = `rgb(${imageData.data[0]}, ${imageData.data[1]}, ${imageData.data[2]})`;
+		return rgbColor;
+	}
+
+	const pointOldColor = getMousePosition(e); // Call getMousePosition here
+	const oldColor = getColorUnderMouse(pointOldColor.x, pointOldColor.y);
+	const newColor = selectedColor;
+	// validate
+	function validate(x, y) {
+		let cx = getColorUnderMouse(x, y);
+		if (cx === oldColor) {
+			stackPoint.push({ x, y });
+			ctx.fillStyle = newColor;
+			ctx.fillRect(x, y, 1, 1);
+		}
+	}
+	const stackPoint = [];
+	stackPoint.push(pointOldColor);
+	if (oldColor == newColor) return;
+	while (stackPoint.length > 0) {
+		let pt = stackPoint.pop();
+		if (
+			pt.x > 0 &&
+			pt.y > 0 &&
+			pt.x < canvas.width - 1 &&
+			pt.y < canvas.height - 1
+		) {
+			validate(pt.x - 1, pt.y, stackPoint);
+			validate(pt.x, pt.y - 1, stackPoint);
+			validate(pt.x + 1, pt.y, stackPoint);
+			validate(pt.x, pt.y + 1, stackPoint);
+		}
+	}
+}
+
+canvas.addEventListener("mousedown", (e) => {
+	if (selectedTool === "fill") fill(e);
+});
